@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,23 +11,41 @@ using Unity.VisualScripting;
 [System.Serializable]
 public class CharacterInformation
 {
-    [Header("Character")]
+    [Header("Character Info")]
+    [Tooltip("Name of the speaking character.")]
     public string name;
+
+    [Tooltip("Character portrait sprite to display during dialogue.")]
     public Sprite sprite;
+
+    [Space(10)]
     [Header("Dialogue")]
+    [Tooltip("Dialogue text for this character.")]
     [TextArea]
     public string text;
+
+    [Tooltip("If true, the character portrait will appear on the right side of the screen.")]
     public bool isRight = false;
-    [Space(5)]
+
+    [Space(10)]
+    [Header("Audio & Events")]
+    [Tooltip("Optional reaction sound to play when this dialogue is active.")]
     public AudioClip reactionSFX;
+
+    [Tooltip("Event triggered when this dialogue finishes playing.")]
     public UnityEvent finishEvent;
 }
+
 
 [System.Serializable]
 public class KeyDuration
 {
+    [Header("Wait Key Settings")]
+    [Tooltip("Special character or key used to trigger a typing pause.")]
     public string key;
-    public float duration;
+
+    [Tooltip("Duration (in seconds) to wait when this key is encountered.")]
+    public float duration = 0.1f;
 }
 #endregion
 
@@ -35,62 +53,82 @@ public class DialogueManager : MonoBehaviour
 {
     #region Variables
 
+    [Header("Singleton & Lifecycle")]
+    [Tooltip("Global reference to the DialogueManager singleton instance.")]
     public static DialogueManager Instance;
+
+    [Tooltip("If enabled, the dialogue system will start automatically on Awake.")]
     public bool playOnAwake;
 
+
+    [Space(10)]
     [Header("Dialogue Settings")]
-    [Tooltip("Tüm diyalog karakter ve replik bilgileri listesi")]
+    [Tooltip("List of all characters and their dialogue lines.")]
     public List<CharacterInformation> allDialogues;
 
-    [Tooltip("Konuþmalarýn hangi tuþ ile geçileceði")]
-    public KeyCode skipDialoguesKey = KeyCode.Space;
-
-    [Tooltip("Yazýlarýn ekranda görünme (yazýlma) hýzý")]
+    [Tooltip("Typing speed for characters (seconds per character).")]
     public float textTypingSpeed = 0.01f;
 
-    [Tooltip("Belirli özel karakterlerde ne kadar bekleme yapýlacaðý")]
+    [Tooltip("Special wait keys and their durations to pause the typing.")]
     public KeyDuration[] allWaitKey;
 
-    [Tooltip("Animasyonlarýn oynatma hýzý")]
+    [Tooltip("Playback speed multiplier for dialogue-related animations.")]
     [Range(0.1f, 5f)]
     public float animationSpeed = 1f;
 
+
     [Space(10)]
-    [Header("Audio & State")]
-    [Tooltip("Yazý yazarken karakter reaksiyon sesi oynatýlacaksa kullanýlacak ses kaynaðý")]
-    public AudioSource characterReactionSFX;
-    [Tooltip("Yazý yazarken oynatýlacak ses var ise oynatýlacak ses")]
-    public AudioSource typingSFX;
+    [Header("Input")]
+    [Tooltip("Keyboard key used to skip or advance dialogue.")]
+    public KeyCode skipDialoguesKey = KeyCode.Space;
 
-    [Tooltip("Yazý kutusu þu anda açýk mý?")]
-    [ReadOnly] public bool textBoxIsOpen = false;
 
-    [Tooltip("Diyalog sistemi þu anda aktif mi?")]
-    [ReadOnly] public bool isPlayDialogue = false;
-
-    [Space(15)]
-    [Header("UI References")]
-    [Tooltip("Konuþma kutusu GameObject'i")]
-    public GameObject textBox;
-
-    [Tooltip("Sað tarafta konuþan karakterin portresi")]
-    public Image rightImage;
-
-    [Tooltip("Sol tarafta konuþan karakterin portresi")]
-    public Image leftImage;
-
-    [Tooltip("Diyalog metninin yazdýrýlacaðý TextMeshPro alaný")]
-    public TextMeshProUGUI text;
-
-    [Tooltip("Konuþan karakterin adýnýn yazýlacaðý TextMeshPro alaný")]
-    public TextMeshProUGUI characterNameText;
-
-    [Tooltip("Oyuncunun yazý tamamlanmadan skip butona basarsa yazýyý tamamlayýp tamamlamayacaðý")]
+    [Space(10)]
+    [Header("Behavior")]
+    [Tooltip("If the player presses skip before typing ends, complete the line instantly.")]
     public bool canSkipDialogue = true;
 
+
+    [Space(10)]
+    [Header("Audio")]
+    [Tooltip("AudioSource for character reaction SFX during typing.")]
+    public AudioSource characterReactionSFX;
+
+    [Tooltip("AudioSource for typing SFX while text is being written.")]
+    public AudioSource typingSFX;
+
+    [Space(10)]
+    [Header("UI References")]
+    [Tooltip("Dialogue box GameObject.")]
+    public GameObject textBox;
+
+    [Tooltip("Portrait of the speaking character on the right side.")]
+    public Image rightImage;
+
+    [Tooltip("Portrait of the speaking character on the left side.")]
+    public Image leftImage;
+
+    [Tooltip("TextMeshPro field where the dialogue line is written.")]
+    public TextMeshProUGUI text;
+
+    [Tooltip("TextMeshPro field for the speaker's name.")]
+    public TextMeshProUGUI characterNameText;
+
+    [Space(10)]
+    [Header("Runtime State")]
+    [ReadOnly, Tooltip("[ReadOnly] Is the dialogue box currently open?")]
+    public bool textBoxIsOpen = false;
+
+    [ReadOnly, Tooltip("[ReadOnly] Is the dialogue system currently playing?")]
+    public bool isPlayDialogue = false;
+
+    [Space(10)]
+    [Header("Internals")]
+    [Tooltip("Internal flag to track when the skip key is pressed.")]
     private bool pressSkipButton = false;
 
     #endregion
+
 
     #region Unity Lifecycle
     private void Awake()
@@ -130,7 +168,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void AddDialogueAndStart(List<CharacterInfo> newDialogues)
+    public void AddDialogueAndStart(List<CharacterInformation> newDialogues)
     {
         if (isPlayDialogue == false)
         {
@@ -146,8 +184,8 @@ public class DialogueManager : MonoBehaviour
     #region Image & Animation
     void ChangeImage(bool right, Sprite currentSprite, bool instant = false)
     {
-        float tFade = instant ? 0.25f : 0.5f / animationSpeed;
-        float tScale = instant ? 0.5f : 1f / animationSpeed;
+        float tFade = instant ? 0.25f / animationSpeed : 0.5f / animationSpeed;
+        float tScale = instant ? 0.5f / animationSpeed : 1f / animationSpeed;
 
         if (right)
         {
@@ -196,21 +234,21 @@ public class DialogueManager : MonoBehaviour
             leftImage.gameObject.SetActive(leftImage.sprite != null);
             rightImage.gameObject.SetActive(rightImage.sprite != null);
 
-            boxImg.DOFade(1f, 0.25f).From(0.85f);
-            textBox.transform.DOScale(1f, 0.25f).From(0.85f);
-            yield return new WaitForSeconds(0.25f);
+            boxImg.DOFade(1f, 0.25f / animationSpeed).From(0.85f);
+            textBox.transform.DOScale(1f, 0.25f / animationSpeed).From(0.85f);
+            yield return new WaitForSeconds(0.25f / animationSpeed);
         }
         else
         {
             isPlayDialogue = false;
 
-            boxImg.DOFade(0f, 0.25f);
-            textBox.transform.DOScale(0.85f, 0.25f).From(1f);
+            boxImg.DOFade(0f, 0.25f / animationSpeed);
+            textBox.transform.DOScale(0.85f, 0.25f / animationSpeed).From(1f);
 
-            leftImage.DOFade(0f, 0.25f);
-            rightImage.DOFade(0f, 0.25f);
+            leftImage.DOFade(0f, 0.25f / animationSpeed);
+            rightImage.DOFade(0f, 0.25f / animationSpeed);
 
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.25f / animationSpeed);
 
             textBox.SetActive(false);
             text.text = string.Empty;
