@@ -1,7 +1,7 @@
 # UnityDialogueSystem
 A lightweight and flexible 2D dialogue system built with Unity. Perfect for narrative-driven games, RPGs, and visual novels.
 
-# 🎮 DialogueFlow2D
+# 🎮 Dialogue System
 
 **DialogueFlow2D** is a lightweight, modular, and flexible **2D dialogue system for Unity** — perfect for story-driven games, RPGs, and visual novels.  
 It offers full control over dialogue text, speaker visuals, audio reactions, and event triggers, all directly from the Unity Editor.
