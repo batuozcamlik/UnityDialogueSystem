@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using DG.Tweening;
 using Unity.VisualScripting;
+using UnityEditor;
 
 #region Data Classes
 [System.Serializable]
@@ -370,4 +371,37 @@ public class DialogueManager : MonoBehaviour
         isPlayDialogue = false;
     }
     #endregion
+
 }
+#region Custom Inspector
+[CustomEditor(typeof(DialogueManager))]
+public class DialogueInspector : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        GUILayout.Space(10);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        GUILayout.Space(5);
+        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
+        titleStyle.fontSize = 14;
+        titleStyle.fontStyle = FontStyle.Bold;
+        titleStyle.alignment = TextAnchor.MiddleCenter;
+        EditorGUILayout.LabelField("Created by Batu Özçamlık", titleStyle);
+
+        GUILayout.Space(5);
+
+        GUIStyle textStyle = new GUIStyle(GUI.skin.label);
+        textStyle.wordWrap = true;
+        textStyle.richText = true;
+
+        GUIStyle signatureStyle = new GUIStyle(GUI.skin.label);
+        signatureStyle.alignment = TextAnchor.MiddleRight;
+        signatureStyle.fontStyle = FontStyle.Italic;
+        EditorGUILayout.LabelField("www.batuozcamlik.com", signatureStyle);
+
+
+    }
+}
+#endregion

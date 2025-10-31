@@ -357,41 +357,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentDialogue:
-  - name: EZRA
+  - name: Character_1
     sprite: {fileID: 21300000, guid: e6663d1ca87372a449118741be1d478b, type: 3}
-    text: TEST
+    text: TEST 1
     isRight: 0
     reactionSFX: {fileID: 0}
     finishEvent:
       m_PersistentCalls:
         m_Calls: []
-  - name: SKYE
+  - name: Character_2
     sprite: {fileID: 21300000, guid: bd3e34b2bd21acb498021d3d916f4f07, type: 3}
-    text: TEST
+    text: TEST 2
     isRight: 1
     reactionSFX: {fileID: 0}
     finishEvent:
       m_PersistentCalls:
         m_Calls: []
-  - name: EZRA
-    sprite: {fileID: 21300000, guid: e6663d1ca87372a449118741be1d478b, type: 3}
-    text: TEST
+  - name: Character_3
+    sprite: {fileID: 21300000, guid: a39c772ef2f3e424fbf7fab5a2f45cc3, type: 3}
+    text: TEST 3
     isRight: 0
     reactionSFX: {fileID: 0}
     finishEvent:
       m_PersistentCalls:
         m_Calls: []
-  - name: SKYE
+  - name: Character_2
     sprite: {fileID: 21300000, guid: bd3e34b2bd21acb498021d3d916f4f07, type: 3}
-    text: TESTT
+    text: TEST 4
     isRight: 1
     reactionSFX: {fileID: 0}
     finishEvent:
       m_PersistentCalls:
         m_Calls: []
-  - name: EZRA
+  - name: Character_1
     sprite: {fileID: 21300000, guid: e6663d1ca87372a449118741be1d478b, type: 3}
-    text: TESTT
+    text: TEST 5
     isRight: 0
     reactionSFX: {fileID: 0}
     finishEvent:
@@ -420,10 +420,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 289495356696388388, guid: 43b1fd0b2196798409de3789b80d61ab, type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5003787073195211089, guid: 43b1fd0b2196798409de3789b80d61ab, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.04814501
